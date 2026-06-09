@@ -16,7 +16,6 @@ jobs:
     - name: Start Streaming
       run: |
         ffmpeg -re -stream_loop -1 -i "${{ github.event.inputs.video_url }}" \
-        -vf "scale=1280:720:force_original_aspect_ratio=decrease,pad=1280:720:(ow-iw)/2:(oh-ih)/2,format=yuv420p" \
-        -vcodec libx264 -profile:v baseline -level 3.0 -maxrate 1500k -bufsize 3000k \
+        -vcodec libx264 -pix_fmt yuv420p -preset veryfast -maxrate 2000k -bufsize 4000k \
         -acodec aac -b:a 128k -ar 44100 \
         -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"

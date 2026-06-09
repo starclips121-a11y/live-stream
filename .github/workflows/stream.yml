@@ -18,7 +18,7 @@ jobs:
 
     - name: Download Video from Drive
       run: |
-        gdown --id "${{ github.event.inputs.video_id }}" -O video.mp4
+        gdown "https://drive.google.com/uc?id=${{ github.event.inputs.video_id }}" -O video.mp4
 
     - name: Start Streaming
       run: |

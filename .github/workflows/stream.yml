@@ -10,12 +10,15 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
+    - name: Install FFmpeg and gdown
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg python3-pip
+        sudo pip3 install --break-system-packages gdown
+
     - name: Download Video from Drive
       run: |
-        curl -L "https://docs.google.com/uc?export=download&id=${{ github.event.inputs.video_id }}" -o video.mp4
-
-    - name: Install FFmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+        gdown --id "${{ github.event.inputs.video_id }}" -O video.mp4
 
     - name: Start Streaming
       run: |

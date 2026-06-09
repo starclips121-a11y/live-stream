@@ -10,12 +10,17 @@ jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-    - name: Install FFmpeg
-      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Install FFmpeg and yt-dlp
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg python3-pip
+        sudo pip3 install --break-system-packages yt-dlp
 
     - name: Start Streaming
       run: |
-        ffmpeg -re -stream_loop -1 -i "${{ github.event.inputs.video_url }}" \
+        yt-dlp -g "${{ github.event.inputs.video_url }}" > direct_link.txt || echo "${{ github.event.inputs.video_url }}" > direct_link.txt
+        VIDEO_URL=$(cat direct_link.txt)
+        ffmpeg -re -stream_loop -1 -i "$VIDEO_URL" \
         -vcodec libx264 -pix_fmt yuv420p -maxrate 2048k -bufsize 2048k \
         -acodec aac -b:a 128k -ar 44100 \
         -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.YOUTUBE_STREAM_KEY }}"
